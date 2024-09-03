@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+
 import {
     Card,
     CardContent,
@@ -6,58 +6,25 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/ui/accordion"
+
+import { useState } from "react";
 import NewTaskModal from "./NewTaskModal";
 
-const API_BASE_URL = 'http://localhost:5000';
-
 const PrevWeek = () => {
-    const [tasks, setTasks] = useState([]);
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/tasks`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch tasks: ${response.statusText}`);
-                }
-                const data = await response.json();
-                setTasks(data);
-            } catch (error) {
-                console.error('Error fetching tasks:', error);
-                setError(error.message);
-            }
-        };
 
-        fetchTasks();
-    }, []);
+    const [isChecked, setIsChecked] = useState(false);
 
-    const getPrevWeekRange = () => {
-        const today = new Date();
-        const currentDay = today.getDay();
-        const startOfPrevWeek = new Date(today.setDate(today.getDate() - currentDay - 7)); // Start of previous week
-        const endOfPrevWeek = new Date(today.setDate(startOfPrevWeek.getDate() + 6)); // End of previous week
-        return { startOfPrevWeek, endOfPrevWeek };
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
     };
-
-    const getTasksForPrevWeek = () => {
-        const { startOfPrevWeek, endOfPrevWeek } = getPrevWeekRange();
-        return tasks.filter(task => {
-            const dueDate = new Date(task.dueDate);
-            return dueDate >= startOfPrevWeek && dueDate <= endOfPrevWeek;
-        });
-    };
-
-    const filteredTasks = getTasksForPrevWeek();
-
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
@@ -65,72 +32,69 @@ const PrevWeek = () => {
                 <CardHeader>
                     <CardTitle className="text-lg">Last Week</CardTitle>
                     <CardDescription>
-                        <div className="mt-4 w-1/2 bg-white text-blue-500 border border-blue-500 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300">
-                            <NewTaskModal />
+                    <div className=" mt-4 w-1/2 bg-white text-blue-500 border border-blue-500 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300">
+                        <NewTaskModal />
                         </div>
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div>
                         <Accordion type="single" collapsible>
-                            <AccordionItem value="completed-tasks">
-                                <AccordionTrigger className="text-md">Completed</AccordionTrigger>
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="text-md">Completed()</AccordionTrigger>
                                 <AccordionContent>
-                                    {filteredTasks.filter(task => task.isCompleted).map(task => (
-                                        <div key={task._id} className="p-2 border-b">
+                                    <div className="flex gap-3 align-middle">
+                                        <div>
                                             <input
                                                 type="checkbox"
                                                 className="form-checkbox"
-                                                checked={task.isCompleted}
-                                                readOnly
+                                                checked={isChecked}
+                                                onChange={handleCheckboxChange}
                                             />
-                                            <p><strong>Title:</strong> {task.title}</p>
-                                            <p><strong>Description:</strong> {task.desc}</p>
-                                            <p><strong>Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Date'}</p>
                                         </div>
-                                    ))}
+                                        <div className="flex flex-col gap-3">
+                                            <span className={isChecked ? "line-through" : ""}> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maiores dicta in eum corporis voluptates consequatur </span>
+                                            <span className=" w-1/2 border border-s-violet-100 rounded-full px-6 py-1">
+                                                Date
+                                            </span>
+
+                                            <div className=" flex gap-3">
+                                            <span className=" rounded-full w-1/3 px-4 px- py-1 bg-gray-200">Labels</span>
+                                            <span className=" rounded-full w-1/3 px-4 px- py-1 bg-gray-200">Labels</span>
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
 
                         <Accordion type="single" collapsible>
-                            <AccordionItem value="created-tasks">
-                                <AccordionTrigger className="text-md">Created</AccordionTrigger>
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="text-md">Created()</AccordionTrigger>
                                 <AccordionContent>
-                                    {filteredTasks.map(task => (
-                                        <div key={task._id} className="p-2 border-b">
-                                            <p><strong>Title:</strong> {task.title}</p>
-                                            <p><strong>Description:</strong> {task.desc}</p>
-                                            <p><strong>Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Date'}</p>
-                                        </div>
-                                    ))}
+                                    Yes. It adheres to the WAI-ARIA design pattern.
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
 
                         <Accordion type="single" collapsible>
-                            <AccordionItem value="deleted-tasks">
-                                <AccordionTrigger className="text-md">Deleted</AccordionTrigger>
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="text-md">Deleted()</AccordionTrigger>
                                 <AccordionContent>
-                                    {/* Assuming you have some way to mark tasks as deleted; otherwise, show all filtered tasks */}
-                                    {filteredTasks.map(task => (
-                                        <div key={task._id} className="p-2 border-b">
-                                            <p><strong>Title:</strong> {task.title}</p>
-                                            <p><strong>Description:</strong> {task.desc}</p>
-                                            <p><strong>Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Date'}</p>
-                                        </div>
-                                    ))}
+                                    Yes. It adheres to the WAI-ARIA design pattern.
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
                     </div>
                 </CardContent>
                 <CardFooter>
-                    {/* Footer content */}
+
                 </CardFooter>
             </Card>
-        </div>
-    );
-};
 
-export default PrevWeek;
+        </div>
+    )
+}
+
+export default PrevWeek

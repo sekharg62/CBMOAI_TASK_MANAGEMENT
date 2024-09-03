@@ -20,6 +20,7 @@ function MyDatePicker({ onChange }) {
         dateFormat="MMMM d, yyyy"
         placeholderText="Select a date"
         className="px-4 py-2 border rounded-md"
+        minDate={new Date()} // Prevent past dates
       />
     </div>
   );
